@@ -52,9 +52,6 @@ An **ISO file** is a type of disk image file used to replicate the content and s
 Follow the link above to download the ISO file suitable for your system.  
 
 
-### 🖥️ VirtualBox
-Steps to install VirtualBox on your system.
-
 ### 💿 Attaching ISO to VirtualBox
 How to attach the Debian ISO to your VirtualBox instance.
 
