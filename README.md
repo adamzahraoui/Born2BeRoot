@@ -40,8 +40,17 @@
 
 ## Installing the Virtual Machine
 
-### 💿 Virtual Machine ISO
-Instructions for downloading the Debian ISO image.
+## 💿 Virtual Machine ISO
+
+First, we need to download the Debian ISO from the official Debian website:  
+
+[Debian -- Downloading Debian](https://www.debian.org/)  
+
+### What is an ISO File?  
+An **ISO file** is a type of disk image file used to replicate the content and structure of a physical disk, like a CD, DVD, or Blu-ray, in a single file. It’s commonly used for operating system installations.  
+
+Follow the link above to download the ISO file suitable for your system.  
+
 
 ### 🖥️ VirtualBox
 Steps to install VirtualBox on your system.
