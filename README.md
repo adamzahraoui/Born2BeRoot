@@ -44,34 +44,7 @@ Follow the link above to download the ISO file suitable for your system.
 ### 💿 Attaching ISO to VirtualBox
 How to attach the Debian ISO to your VirtualBox instance.
 
----
-
-## 🌀 Installing Debian
-
-### 🌍 Configure Locals
-Set up your locale settings during installation.
-
-### 📶 Configure the Network
-Guide to configure network settings.
-
-### 🔐 Set Up Users and Passwords
-Instructions for creating users and setting passwords.
-
-### 🕚 Configure the Clock
-How to correctly configure the system clock.
-
-### 💾 Partition Disks
-- **non-BONUS**: Standard partitioning for simplicity.
-- **BONUS**: Advanced partitioning options.
-
-### 📦 Configure the Package Manager
-Set up your package manager for future software installations.
-
-### 🖥️ Install the GRUB Boot Loader
-Steps to install the GRUB boot loader.
-
-### 🎉 Finish Installation
-Complete the Debian installation process.
+[whatch this video](https://www.youtube.com/watch?v=OQEdjt38ZJA&t=12s) 
 
 ---
 
