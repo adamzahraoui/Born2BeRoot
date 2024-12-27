@@ -382,7 +382,7 @@ enforce_for_root: Ensures that the root user must follow these password rules as
 
 ### 🚨 Script
 
-[look in my script]()
+[look in my script](monitoring.sh)
 
 ### ⏰ Crontab
 Set up scheduled tasks using crontab.
