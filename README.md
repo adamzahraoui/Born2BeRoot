@@ -385,34 +385,275 @@ enforce_for_root: Ensures that the root user must follow these password rules as
 [look in my script](monitoring.sh)
 
 ### ⏰ Crontab
-Set up scheduled tasks using crontab.
+---
+
+## Configuring Crontab
+
+Crontab is a background process manager that allows you to schedule tasks to be executed at specified times. To properly configure crontab, we need to edit the crontab file.
+
+To do this, use the following command:
+
+```bash
+sudo crontab -u root -e
+```
+---
+
+## Configuring Crontab
+
+Crontab is a background process manager that allows you to schedule tasks to be executed at specified times. To properly configure crontab, we need to edit the crontab file.
+
+To do this, use the following command:
+
+```bash
+crontab -e
+```
+In the file, we must add the following command for the script to execute every 10 minutes 
+```
+@reboot /bin/bash -c "while true; do /bin/bash /root/monitoring.sh; sleep 600; done"
+```
 
 ---
 
-## ✒️ Signature File
+### ✒️ Signature File
 
-### 📄 signature.txt
-Guide to verify or create a signature file.
+## Obtaining the Signature
+
+To obtain the signature of your virtual machine, follow these steps:
+
+1. **Shut down the virtual machine**: 
+   Before obtaining the signature, ensure that the virtual machine is shut down. This is crucial because once the VM is turned on or any modifications are made, the signature will change.
+
+2. **Locate the .vdi file**:
+   After shutting down the VM, locate the **.vdi** (Virtual Disk Image) file of your virtual machine. This file is typically stored on your physical machine. Navigate to the path where the **.vdi** file is located.
 
 ---
+
+## Obtaining the Signature (Continued)
+
+3. **Generate the Signature**:
+   Once the virtual machine is shut down, navigate to the path where the `.vdi` file is located. To generate the signature, use the following command:
+
+   ```bash
+   sha1sum machinename.vdi
+   ```
+The shasum command will generate a SHA-1 hash checksum, which serves as the signature for the file.
+
+Save the Signature: The output of the shasum command is the signature you need. Copy this signature and paste it into the signature.txt file.
+
+Important:
+
+Do not reopen the virtual machine: Once the signature is generated, do not restart or modify the virtual machine, as it will change the signature.
+For any corrections: If you need to make any changes to the VM, clone the machine. This allows you to start the virtual machine without altering the original signature.
+This ensures the integrity of your file and avoids any issues with signature verification.
 
 ## 😊 BONUS Services
 
 ### 💡 Lighttpd
-Installing and configuring the Lighttpd web server.
+
+Lighttpd: is a web server designed to be fast, secure, flexible, and standards-compliant. It is optimized for environments where speed is a top priority because it consumes less CPU and RAM than other servers.
+
+ 1. **Installation of Lighttpd packages**
+```bash
+sudo apt install lighttpd
+```
+
+2. **We allow connections through port 80 with the command**
+```bash
+sudo ufw allow 80
+```
+3. **We check that we have actually allowed it. Port 80 and allow should appear**
+```bash
+sudo ufw status
+```
 
 ### 📰 WordPress
-Setting up WordPress.
+
+# WordPress Installation
+
+WordPress is a content management system focused on creating all types of websites. This guide explains how to install WordPress and configure it on your server.
+
+## 1. Install Required Packages
+
+Before installing WordPress, we need to install `wget` and `zip`. These tools will allow us to download and extract the WordPress package.
+
+Run the following command to install `wget` and `zip`:
+
+```bash
+sudo apt install wget zip
+```
+
+## 2. Once we have installed the packages we must locate ourselves in the folder /var/www/ with the command cd we will access it
+```bash
+cd /var/www/
+```
+
+## 3.Once we are in the path /var/www/ we must download the latest version of WordPress. As my native language is Spanish I will select the latest version in Spanish. We will use the following command
+```bash
+sudo wget https://es.wordpress.org/latest-fr_FR.zip
+```
+
+## 4.Unzip the file you just downloaded with the command
+```bash
+sudo unzip latest-en_US.zip
+```
+
+## 5.We will rename the folder html and call it html_old:
+```bash
+sudo mv html/ html_old/
+```
+
+## 6.Now we will rename the wordpress folder and call it html
+```bash
+sudo mv wordpress/ html
+```
+
+## 7.Finally we will set these permissions on the html folder. We will use the command sudo chmod -R 755 html. The number 7 indicates that the owner has read, write and execute permissions. The number 5 indicates that the group and others only have read and execute permissions.
+```bash
+sudo chmod -R 755 html
+```
+
 
 ### 🐬 MariaDB
-Installing and configuring the MariaDB database.
+
+# MariaDB Installation
+
+MariaDB is an open-source relational database management system (RDBMS). It is commonly used for various purposes, including data warehousing, e-commerce, enterprise-level functions, and logging applications.
+
+## 1. Install MariaDB
+
+To install MariaDB, run the following command:
+
+```bash
+sudo apt install mariadb-server
+```
+
+## 2. Secure MariaDB Installation
+
+By default, MariaDB is not fully secure. To enhance security, we will use the `mysql_secure_installation` script provided by the MariaDB server package. This script helps restrict access to the server and removes unused accounts.
+
+Run the following command to start the script:
+
+```bash
+sudo mysql_secure_installation
+```
+
+It will ask if we want to switch to Unix socket authentication. Since we already have a protected root account we will type N.
+
+Switch to unix_socket autentication? → N 
+Change the root password? → N
+Remove anonymous users? → Y 
+Disallow root login remotely? → Y 
+Remove test database and access to it? → Y 
+Reload privilege tables now? → Y
+
+Switch to unix_socket authentication? We choose N because we don't want it to switch to Unix socket authentication because we already have a protected root account.
+
+Change the root password? We choose N. We do not want to change the root password. By default we have no password but in mariadb he is not really root as we must give him administrator permissions.
+
+Remove anonymous users? We choose Y. By default when you install mariadb it has an anonymous user, which allows anyone to log into mariadb without having to create their own user account. This is designed for testing purposes and to make the installation smoother. When we leave the development environment and want to move to a production environment we must remove the anonymous users.
+
+Disallow root login remotely? Choose Y. Disabling root login remotely will prevent anyone from guessing the root password. We will only be able to connect to root from localhost.
+
+Remove test database and access to it? Choose Y. This will remove the test database and any users who have access to it.
+
+Reaload privilege tables now? Choose Y. This will reload the MySQL permission tables so that the changes to the security settings will take effect immediately.
+
+## 3. Create Database and User for WordPress
+
+After installing MariaDB, we need to create a database and a user for WordPress.
+
+1. First, access the MariaDB prompt by running the following command:
+
+    ```bash
+    mariadb
+    ```
+
+2. Once you're in the MariaDB shell, create a new database for WordPress with the following command:
+
+    ```sql
+    CREATE DATABASE wordpress_db;
+    ```
+
+3. Next, create a user and grant it permissions to the database. Replace `wp_user` and `wp_password` with your desired username and password:
+
+    ```sql
+    CREATE USER 'wp_user'@'localhost' IDENTIFIED BY 'wp_password';
+    ```
+
+4. Grant the user all privileges on the WordPress database:
+
+    ```sql
+    GRANT ALL PRIVILEGES ON wordpress_db.* TO 'wp_user'@'localhost';
+    ```
+
+5. Finally, flush privileges to apply the changes:
+
+    ```sql
+    FLUSH PRIVILEGES;
+    ```
+
+6. Exit the MariaDB shell:
+
+    ```sql
+    EXIT;
+    ```
+
+Now your database and user are ready to be used with WordPress.
 
 ### 🐘 PHP
-Installing PHP for dynamic web applications.
+
+## 4. Install PHP for WordPress
+
+PHP is a programming language used to develop dynamic web applications. It is required for running WordPress, which is written in PHP, and to connect to the MariaDB database.
+
+To install the necessary PHP packages for running web applications like WordPress, run the following command:
+
+```bash
+sudo apt install php-cgi php-mysql
+```
 
 ### 📰 WordPress Configuration
-Final steps to configure WordPress.
 
+## 5. WordPress Configuration
+
+Once you have installed WordPress, you need to configure it to connect to your MariaDB database. 
+
+1. Access the `/var/www/html` directory:
+```bash
+cd /var/www/html
+```
+
+2. Copy the file wp-config-sample.php and rename it wp-config.php:
+```bash
+cp wp-config-sample.php wp-config.php
+```
+3. Once we have renamed it we will edit the file wp-config.php:
+```bash
+vim wp-config.php
+```
+
+3. modify the following values:
+
+define('DB_NAME', 'wordpress_db');
+define('DB_USER', 'wordpress_user');
+define('DB_PASSWORD', 'your_password');
+
+4. To improve the performance and speed of web applications on the server, enable the `fastcgi` module in Lighttpd:
+```bash
+sudo lighty-enable-mod fastcgi
+```
+
+5. We enabled the fastcgi-php module in Lighttpd to improve the performance and speed of PHP-based web applications on the server:
+```bash
+sudo lighty-enable-mod fastcgi-php
+```
+
+6. We update and apply the changes in the configuration with the command:
+```bash
+sudo service lighttpd force-reload
+```
+
+7. Once we have completed the previous steps we can go back to our browser and type IP adresse
 ---
 
 Enjoy setting up your virtual machine and services! 🎉
